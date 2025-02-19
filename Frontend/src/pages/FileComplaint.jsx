@@ -26,7 +26,7 @@ const FileComplaint = () => {
     }
 
     try {
-      await API.post('/complaints', 
+      await API.post('/api/complaints', 
         { title, description, type, severity }, 
         { headers: { Authorization: `Bearer ${token}` } } // ✅ Ensure token is in headers
       );
