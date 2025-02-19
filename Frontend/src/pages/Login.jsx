@@ -60,24 +60,27 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError(''); // Clear previous errors
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setError('');
 
-    try {
-      const { data } = await API.post('/auth/login', { email, password });
+  try {
+    const { data } = await API.post('/auth/login', { email, password });
 
-      // Store the token
-      localStorage.setItem('token', data.token);
-      console.log('✅ Login successful:', data);
+    console.log('✅ Login successful. Token received:', data.token);
+    
+    // Ensure token is stored before navigating
+    localStorage.setItem('token', data.token);
+    
+    // Force reloading to make sure token is available for subsequent requests
+    window.location.href = '/file-complaint';
 
-      // Redirect user after login
-      navigate('/file-complaint');
-    } catch (err) {
-      console.error('❌ Login failed:', err.response?.data?.error || err.message);
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
-    }
-  };
+  } catch (err) {
+    console.error('❌ Login failed:', err.response?.data?.error || err.message);
+    setError(err.response?.data?.error || 'Login failed. Please try again.');
+  }
+};
+
 
   return (
     <form onSubmit={handleLogin}>
