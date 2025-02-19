@@ -15,18 +15,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Debugging Middleware to Log Requests
+app.use((req, res, next) => {
+    console.log(`Received request: ${req.method} ${req.url}`);
+    next();
+});
+
 // Default Route (Fix for Cannot GET /)
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+// Test Route
 app.get('/api/test', (req, res) => {
     res.json({ message: 'API is working!' });
 });
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
+
+// Handle 404 Errors for Undefined Routes
+app.use((req, res) => {
+    res.status(404).json({ error: 'Route not found' });
+});
 
 // Start Server
 const PORT = process.env.PORT || 5000;
