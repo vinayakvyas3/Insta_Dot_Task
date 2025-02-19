@@ -54,7 +54,10 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-
+    
+// Log the token to verify it is generated
+console.log("🔹 Token sent to client:", token);
+    
     res.json({ 
       message: 'Login successful',
       token,
