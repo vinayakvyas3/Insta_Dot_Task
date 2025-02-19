@@ -65,7 +65,7 @@ const handleLogin = async (e) => {
   setError('');
 
   try {
-    const { data } = await API.post('/auth/login', { email, password });
+    const { data } = await API.post('/api/auth/login', { email, password });
 
     console.log('✅ Login successful. Token received:', data.token);
     
