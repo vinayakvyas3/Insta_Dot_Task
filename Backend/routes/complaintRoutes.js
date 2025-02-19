@@ -1,5 +1,6 @@
 import express from 'express';
 import { auth } from '../middleware/auth.js';
+import { createComplaint } from '../controllers/complaintController.js';
 import {
   createComplaint,
   getComplaints,
