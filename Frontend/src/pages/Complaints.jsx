@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import API from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import '../styles/App.css';
@@ -7,26 +7,39 @@ const Complaints = () => {
   const [complaints, setComplaints] = useState([]);
   const { token } = useAuth();
 
- useEffect(() => {
-  if (!token) {
-    console.log("No token available, skipping fetch.");
-    return;
-  }
+  useEffect(() => {
+    if (!token) return;
 
-  const fetchComplaints = async () => {
+    const fetchComplaints = async () => {
+      try {
+        const { data } = await API.get('/complaints');
+        setComplaints(data);
+      } catch (err) {
+        alert('Failed to fetch complaints: ' + (err.response?.data?.error || err.message));
+      }
+    };
+    fetchComplaints();
+  }, [token]);
+
+  // Function to handle voting
+  const handleVote = async (id, voteType) => {
     try {
-      console.log("Fetching complaints with token:", token);
-      const { data } = await API.get('/complaints'); // Token auto-included
-      setComplaints(data);
+      const { data } = await API.post(
+        `/complaints/${id}/vote`,
+        { voteType },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Update complaints list with new vote count
+      setComplaints((prevComplaints) =>
+        prevComplaints.map((complaint) =>
+          complaint._id === id ? { ...complaint, votes: data.complaint.votes } : complaint
+        )
+      );
     } catch (err) {
-      console.error('Failed to fetch complaints:', err.response?.data?.error || err.message);
-      alert('Error: ' + (err.response?.data?.error || err.message));
+      alert('Failed to vote: ' + (err.response?.data?.error || err.message));
     }
   };
-
-  fetchComplaints();
-}, [token]);
-
 
   return (
     <div>
@@ -36,6 +49,9 @@ const Complaints = () => {
           <h3>{complaint.title}</h3>
           <p>{complaint.description}</p>
           <p>Type: {complaint.type} | Severity: {complaint.severity}</p>
+          <p>Votes: {complaint.votes}</p>
+          <button onClick={() => handleVote(complaint._id, 'upvote')}>👍 Upvote</button>
+          <button onClick={() => handleVote(complaint._id, 'downvote')}>👎 Downvote</button>
         </div>
       ))}
     </div>
