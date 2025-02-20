@@ -9,7 +9,7 @@ const FileComplaint = () => {
   const [description, setDescription] = useState('');
   const [type, setType] = useState('Noise');
   const [severity, setSeverity] = useState('Mild');
-  const { token } = useAuth(); // ✅ Ensure token is correctly retrieved
+  const { token } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,11 +28,11 @@ const FileComplaint = () => {
     try {
       await API.post('/complaints', 
         { title, description, type, severity }, 
-        { headers: { Authorization: `Bearer ${token}` } } // ✅ Ensure token is in headers
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       alert('Complaint filed!');
-      navigate('/complaints');
+      navigate('/complaints'); // Redirect after submission
     } catch (err) {
       alert('Failed to file complaint: ' + (err.response?.data?.error || err.message));
     }
@@ -58,8 +58,14 @@ const FileComplaint = () => {
         </select>
         <button type="submit" className="button button-primary">Submit</button>
       </form>
+
+      {/* View Active Complaints Button */}
+      <button onClick={() => navigate('/complaints')} className="button button-secondary" style={{ marginTop: '10px' }}>
+        View Active Complaints
+      </button>
     </div>
   );
 };
 
 export default FileComplaint;
+
