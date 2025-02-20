@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import '../styles/App.css'; // Ensure you have this CSS file
 
 const Home = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
+      {/* Navbar */}
       <nav className="navbar">
         <h1 className="logo">QuirkyRoomie</h1>
         <div className="auth-buttons">
@@ -25,13 +27,17 @@ const Home = () => {
               <Link to="/login" className="button button-secondary">Login</Link>
             </>
           ) : (
-            <button onClick={() => { localStorage.removeItem('token'); navigate('/'); }} className="button button-secondary">
+            <button 
+              onClick={() => { localStorage.removeItem('token'); navigate('/'); }} 
+              className="button button-secondary"
+            >
               Logout
             </button>
           )}
         </div>
       </nav>
 
+      {/* Hero Section */}
       <header className="hero">
         <h2>Welcome to QuirkyRoomie</h2>
         <p>Your go-to platform for resolving flatmate conflicts with ease.</p>
@@ -40,16 +46,15 @@ const Home = () => {
         </button>
       </header>
 
+      {/* Features Section */}
       <section className="features">
-        <div className="feature-card">
+        <div className="feature-card" onClick={() => handleProtectedRoute('/file-complaint')}>
           <h3>📜 File Complaints</h3>
           <p>Submit your issues anonymously and get them resolved efficiently.</p>
-          <button onClick={() => handleProtectedRoute('/file-complaint')} className="button">Go</button>
         </div>
-        <div className="feature-card">
+        <div className="feature-card" onClick={() => handleProtectedRoute('/complaints')}>
           <h3>📢 View Complaints</h3>
           <p>Check complaints filed by others in your flat and respond accordingly.</p>
-          <button onClick={() => handleProtectedRoute('/complaints')} className="button">Go</button>
         </div>
         <div className="feature-card">
           <h3>🔐 Secure Login</h3>
